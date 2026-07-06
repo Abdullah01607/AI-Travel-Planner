@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Planner - Craft Your Perfect Journey</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-1.1.1-1.5.5l-.3.3c-.4.4-.4 1.1 0 1.5L9 12l-3 3-2.5-.5c-.6-.1-1.1.2-1.3.7l-.2.5c-.2.5.1 1 .5 1.3L6 18l1.8 3.5c.3.4.8.7 1.3.5l.5-.2c.5-.2.8-.7.7-1.3l-.5-2.5 3-3 3.5 6c.4.4 1.1.4 1.5 0l.3-.3c.4-.4.6-1 .5-1.5z"/></svg>
+                <span>RoamAI</span>
+            </a>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <button class="btn btn-primary btn-mobile-cta">Start Planning</button>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="startPlanningBtnNav">Start Planning</button>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-icon">✨</span>
+                    <span class="badge-text">AI-Powered Travel Assistant</span>
+                </div>
+                <h1 class="hero-title">Craft Your Perfect Journey in <span class="text-gradient">Seconds</span></h1>
+                <p class="hero-description">
+                    Tell us your vibe, budget, and destination, and let our advanced AI model build a customized, day-by-day travel itinerary tailored exactly to your style.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-lg" id="startPlanningBtnHero">
+                        Start Planning
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-arrow"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </div>
+                <div class="hero-features-list">
+                    <div class="hero-feature-item">
+                        <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="hero-feature-item">
+                        <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>Powered by Groq AI</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="visual-wrapper">
+                    <img src="assets/hero-travel.png" alt="AI Travel Planner Concept" class="hero-image">
+                    <div class="decorative-blob blob-1"></div>
+                    <div class="decorative-blob blob-2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Key Features</span>
+                <h2 class="section-title">Designed for modern explorers</h2>
+                <p class="section-subtitle">Skip the hours of research. Our planner organizes everything so you can focus on the adventure.</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <h3 class="feature-card-title">Day-by-Day Schedules</h3>
+                    <p class="feature-card-description">Receive optimized, realistic schedules mapping out morning, afternoon, and evening activities without feeling rushed.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <h3 class="feature-card-title">Smart Budgeting</h3>
+                    <p class="feature-card-description">Specify your budget level—from backpacker to luxury—and see restaurant and activity recommendations matching your tier.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-icon-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <h3 class="feature-card-title">Local Hotspots</h3>
+                    <p class="feature-card-description">Uncover hidden gems and popular local attractions powered by real-world destination intelligence curated by LLMs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Process</span>
+                <h2 class="section-title">How does it work?</h2>
+                <p class="section-subtitle">Get your dream travel itinerary in three simple steps.</p>
+            </div>
+            
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Enter Preferences</h3>
+                    <p class="step-description">Define your target destination, duration of stay, traveling party size, and estimated budget.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Select Interests</h3>
+                    <p class="step-description">Choose your style, whether you love outdoor adventure, historical sites, fine dining, or shopping.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Generate & Go</h3>
+                    <p class="step-description">RoamAI instantly designs a clean, beautiful itinerary powered by Groq LLM speed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to plan your next escape?</h2>
+            <p class="cta-description">Build a complete, personalized travel plan tailored to your personality in just one click.</p>
+            <button class="btn btn-white btn-lg" id="startPlanningBtnCTA">Start Planning Now</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="#" class="logo footer-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-1.1.1-1.5.5l-.3.3c-.4.4-.4 1.1 0 1.5L9 12l-3 3-2.5-.5c-.6-.1-1.1.2-1.3.7l-.2.5c-.2.5.1 1 .5 1.3L6 18l1.8 3.5c.3.4.8.7 1.3.5l.5-.2c.5-.2.8-.7.7-1.3l-.5-2.5 3-3 3.5 6c.4.4 1.1.4 1.5 0l.3-.3c.4-.4.6-1 .5-1.5z"/></svg>
+                    <span>RoamAI</span>
+                </a>
+                <p class="footer-tagline">AI-powered personalized travel itineraries. Crafted dynamically to simplify your adventures.</p>
+                <span class="project-badge">University AI Project</span>
+            </div>
+            
+            <div class="footer-links-group">
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Product</h4>
+                    <a href="#features" class="footer-link-item">Features</a>
+                    <a href="#how-it-works" class="footer-link-item">How It Works</a>
+                    <a href="#" class="footer-link-item">Future Roadmap</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Technology</h4>
+                    <a href="https://groq.com" target="_blank" class="footer-link-item">Groq API</a>
+                    <a href="#" class="footer-link-item">Llama Models</a>
+                    <a href="#" class="footer-link-item">University Course</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-bottom-container">
+                <p class="copyright">&copy; 2026 RoamAI. Developed for AI Course. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon-link" aria-label="Github">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>
