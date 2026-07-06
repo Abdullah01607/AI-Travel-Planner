@@ -6,11 +6,23 @@ import requests
 # Load environment variables from .env
 load_dotenv()
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    return send_from_directory('.', 'index.html')
+
+@app.route('/style.css')
+def style():
+    return send_from_directory('.', 'style.css')
+
+@app.route('/main.js')
+def main_js():
+    return send_from_directory('.', 'main.js')
+
+@app.route('/assets/<path:filename>')
+def assets(filename):
+    return send_from_directory('assets', filename)
 
 @app.route('/api/generate', methods=['POST'])
 def generate_itinerary():
@@ -93,7 +105,8 @@ Please structure your response in Markdown using the following formatting rules 
         )
 
         if response.status_code != 200:
-            error_data = response.json() if response.headers.get('Content-Type') == 'application/json' else {}
+            is_json = 'application/json' in response.headers.get('Content-Type', '')
+            error_data = response.json() if is_json else {}
             error_msg = error_data.get('error', {}).get('message', response.text)
             return jsonify({"error": f"Groq API Error: {error_msg}"}), response.status_code
 
