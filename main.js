@@ -61,28 +61,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       3. CUSTOM TOAST NOTIFICATION
+       3. SCROLL TO FORM ON CLICK
        ========================================== */
-    const showComingSoonToast = () => {
-        // Close menu if open (on mobile)
-        closeMenu();
+    planningButtons.forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeMenu();
+                const formSection = document.getElementById('planning-form');
+                if (formSection) {
+                    formSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    });
 
-        // Check if toast already exists
+    /* ==========================================
+       4. CUSTOM TOAST NOTIFICATION
+       ========================================== */
+    const showFormToast = (destination) => {
         let existingToast = document.querySelector('.roamai-toast');
         if (existingToast) {
             existingToast.remove();
         }
 
-        // Create toast element
         const toast = document.createElement('div');
         toast.className = 'roamai-toast';
         
-        // Inline styles for toast container
         Object.assign(toast.style, {
             position: 'fixed',
             bottom: '24px',
             right: '24px',
-            backgroundColor: '#0f172a', // Deep slate
+            backgroundColor: '#0f172a',
             color: '#ffffff',
             padding: '1rem 1.5rem',
             borderRadius: '12px',
@@ -101,37 +111,129 @@ document.addEventListener('DOMContentLoaded', () => {
             pointerEvents: 'none'
         });
 
-        // Toast content
         toast.innerHTML = `
-            <span style="font-size: 1.2rem;">🚀</span>
-            <span>Planning Form is coming in the next step!</span>
+            <span style="font-size: 1.2rem;">✨</span>
+            <span>Itinerary data for <strong>${destination}</strong> logged to console!</span>
         `;
 
         document.body.appendChild(toast);
 
-        // Animate in
         setTimeout(() => {
             toast.style.opacity = '1';
             toast.style.transform = 'translateY(0)';
         }, 50);
 
-        // Animate out and remove
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateY(15px)';
             setTimeout(() => {
                 toast.remove();
             }, 400);
-        }, 3500);
+        }, 4000);
     };
 
-    // Attach listeners to all start planning buttons
-    planningButtons.forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showComingSoonToast();
-            });
-        }
-    });
+    /* ==========================================
+       5. FORM SUBMISSION
+       ========================================== */
+    const itineraryForm = document.getElementById('itineraryForm');
+    const generateBtn = document.getElementById('generateBtn');
+    const itinerarySection = document.getElementById('itinerary-section');
+    const itineraryContent = document.getElementById('itinerary-content');
+    const itineraryTitle = document.getElementById('itinerary-title');
+    const metaDestination = document.getElementById('meta-destination');
+    const metaDuration = document.getElementById('meta-duration');
+    const metaStyle = document.getElementById('meta-style');
+    const printBtn = document.getElementById('printBtn');
+
+    if (itineraryForm && generateBtn) {
+        itineraryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = new FormData(itineraryForm);
+            const interests = [];
+            formData.getAll('interests').forEach(val => interests.push(val));
+            
+            const payload = {
+                destination: formData.get('destination'),
+                startDate: formData.get('startDate'),
+                endDate: formData.get('endDate'),
+                duration: formData.get('duration'),
+                travelers: formData.get('travelers'),
+                budget: formData.get('budget'),
+                travelStyle: formData.get('travelStyle'),
+                interests: interests
+            };
+            
+            // Put button into loading state
+            const originalBtnContent = generateBtn.innerHTML;
+            generateBtn.classList.add('loading');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = `
+                <div class="spinner"></div>
+                Generating Custom Itinerary...
+            `;
+            
+            // Hide previous itinerary if any
+            if (itinerarySection) {
+                itinerarySection.classList.add('hidden');
+            }
+
+            try {
+                // Call local backend endpoint
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Server responded with an error');
+                }
+
+                // Fill details in UI
+                if (metaDestination) metaDestination.textContent = payload.destination;
+                if (metaDuration) metaDuration.textContent = `${payload.duration} Days`;
+                if (metaStyle) metaStyle.textContent = payload.travelStyle.charAt(0).toUpperCase() + payload.travelStyle.slice(1);
+                if (itineraryTitle) itineraryTitle.textContent = `Your Custom Itinerary for ${payload.destination}`;
+                
+                // Parse and inject Markdown content
+                if (itineraryContent && typeof marked !== 'undefined') {
+                    itineraryContent.innerHTML = marked.parse(data.itinerary);
+                } else if (itineraryContent) {
+                    // Fallback if marked library fails to load
+                    itineraryContent.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${data.itinerary}</pre>`;
+                }
+
+                // Show itinerary section
+                if (itinerarySection) {
+                    itinerarySection.classList.remove('hidden');
+                    // Scroll smoothly to it
+                    setTimeout(() => {
+                        itinerarySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+
+            } catch (err) {
+                console.error('Error generating itinerary:', err);
+                alert(`Oops! We couldn't generate your itinerary. ${err.message}`);
+            } finally {
+                // Restore button state
+                generateBtn.classList.remove('loading');
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = originalBtnContent;
+            }
+        });
+    }
+
+    // Print functionality
+    if (printBtn) {
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+    }
 });
