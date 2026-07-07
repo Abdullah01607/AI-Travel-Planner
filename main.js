@@ -201,13 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (metaStyle) metaStyle.textContent = payload.travelStyle.charAt(0).toUpperCase() + payload.travelStyle.slice(1);
                 if (itineraryTitle) itineraryTitle.textContent = `Your Custom Itinerary for ${payload.destination}`;
                 
-                // Parse and inject Markdown content
-                if (itineraryContent && typeof marked !== 'undefined') {
-                    itineraryContent.innerHTML = marked.parse(data.itinerary);
-                } else if (itineraryContent) {
-                    // Fallback if marked library fails to load
-                    itineraryContent.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${data.itinerary}</pre>`;
-                }
+                // Render Day Cards dynamically
+                renderItineraryCards(data.itinerary);
 
                 // Show itinerary section
                 if (itinerarySection) {
@@ -226,6 +221,148 @@ document.addEventListener('DOMContentLoaded', () => {
                 generateBtn.classList.remove('loading');
                 generateBtn.disabled = false;
                 generateBtn.innerHTML = originalBtnContent;
+            }
+        });
+    }
+
+    // Dynamic Itinerary Cards Rendering
+    function renderItineraryCards(itinerary) {
+        if (!itineraryContent) return;
+
+        if (itinerary.error_parsing || typeof itinerary !== 'object') {
+            // Fallback: render raw text/markdown if JSON mode fails
+            if (typeof marked !== 'undefined') {
+                itineraryContent.innerHTML = marked.parse(itinerary.raw || itinerary);
+            } else {
+                itineraryContent.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit; padding: 2rem;">${itinerary.raw || itinerary}</pre>`;
+            }
+            document.getElementById('general-tips-section')?.classList.add('hidden');
+            return;
+        }
+
+        // Set destination/duration/style meta fields if present
+        if (metaDestination && itinerary.destination) metaDestination.textContent = itinerary.destination;
+        if (metaDuration && itinerary.duration) metaDuration.textContent = `${itinerary.duration} Days`;
+
+        // Render each day card
+        let html = '';
+        const days = itinerary.days || [];
+        days.forEach(day => {
+            // Process restaurants
+            let restaurantsHtml = '';
+            if (day.restaurants && Array.isArray(day.restaurants)) {
+                day.restaurants.forEach(rest => {
+                    restaurantsHtml += `<li>${rest}</li>`;
+                });
+            }
+
+            html += `
+            <div class="itinerary-day-card">
+                <div class="day-card-header">
+                    <span class="day-badge">Day ${day.dayNumber || ''}</span>
+                    <h3 class="day-title">${day.dayTitle || ''}</h3>
+                    <div class="day-cost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cost-icon"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        <span>${day.estimatedDailyCost || 'Moderate'}</span>
+                    </div>
+                </div>
+                
+                <div class="day-card-timeline">
+                    <!-- Morning -->
+                    <div class="timeline-item">
+                        <div class="timeline-icon morning" title="Morning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Morning</h4>
+                            <p>${day.morning || ''}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Afternoon -->
+                    <div class="timeline-item">
+                        <div class="timeline-icon afternoon" title="Afternoon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Afternoon</h4>
+                            <p>${day.afternoon || ''}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Evening -->
+                    <div class="timeline-item">
+                        <div class="timeline-icon evening" title="Evening">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Evening</h4>
+                            <p>${day.evening || ''}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="day-card-footer">
+                    <div class="footer-section restaurants">
+                        <h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M12 2v14M12 22v-6M12 16H8.5a3.5 3.5 0 0 1-3.5-3.5V6a2 2 0 0 1 2-2M12 16h3.5a3.5 3.5 0 0 0 3.5-3.5V6a2 2 0 0 0-2-2"/></svg>
+                            Recommended Food
+                        </h5>
+                        <ul>
+                            ${restaurantsHtml || '<li>Ask locals for street food favorites!</li>'}
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section day-tips">
+                        <h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+                            Daily Tip
+                        </h5>
+                        <p>${day.travelTips || 'Stay flexible and enjoy the adventure!'}</p>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+
+        itineraryContent.innerHTML = html;
+
+        // Render General Tips
+        const generalTipsSection = document.getElementById('general-tips-section');
+        const generalTipsContent = document.getElementById('general-tips-content');
+        if (generalTipsSection && generalTipsContent) {
+            const generalTips = itinerary.generalTips || [];
+            if (generalTips.length > 0) {
+                let tipsHtml = '<ul>';
+                generalTips.forEach(tip => {
+                    tipsHtml += `<li>${tip}</li>`;
+                });
+                tipsHtml += '</ul>';
+                generalTipsContent.innerHTML = tipsHtml;
+                generalTipsSection.classList.remove('hidden');
+            } else {
+                generalTipsSection.classList.add('hidden');
+            }
+        }
+    }
+
+    // Theme Toggle (Dark Mode)
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        // Load initial theme state
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
             }
         });
     }
