@@ -55,8 +55,34 @@ def generate_itinerary():
             }), 500
 
         # Construct prompt
-        prompt = f"""
-Generate a detailed, highly personalized day-by-day travel itinerary for:
+        system_prompt = (
+            "You are a professional travel agent. You write detailed, organized travel itineraries. "
+            "You MUST respond ONLY with a JSON object. The JSON object must match this schema exactly:\n"
+            "{\n"
+            '  "destination": "Name of the destination",\n'
+            '  "duration": number_of_days,\n'
+            '  "days": [\n'
+            "    {\n"
+            '      "dayNumber": 1,\n'
+            '      "dayTitle": "Title of the day theme",\n'
+            '      "morning": "Detailed activities for morning (use rich descriptions with emojis)",\n'
+            '      "afternoon": "Detailed activities for afternoon (use rich descriptions with emojis)",\n'
+            '      "evening": "Detailed activities for evening (use rich descriptions with emojis)",\n'
+            '      "restaurants": ["Restaurant name (description) - Price tier", "Restaurant name (description) - Price tier"],\n'
+            '      "estimatedDailyCost": "$X USD equivalent",\n'
+            '      "travelTips": "Specific cultural, transit or safety advice for this day"\n'
+            "    }\n"
+            "  ],\n"
+            '  "generalTips": [\n'
+            '    "Tip 1...",\n'
+            '    "Tip 2..."\n'
+            "  ]\n"
+            "}\n"
+            "Do not output any text before or after the JSON."
+        )
+
+        user_prompt = f"""
+Generate a detailed, highly personalized travel itinerary for:
 - Destination: {destination}
 - Duration: {duration} days
 - Group Size: {travelers} traveler(s)
@@ -64,15 +90,6 @@ Generate a detailed, highly personalized day-by-day travel itinerary for:
 - Budget Category: {budget.capitalize()}
 - Travel Style: {travel_style.capitalize()}
 - Specific Interests: {", ".join(interests) if interests else "General sightseeing"}
-
-Please structure your response in Markdown using the following formatting rules to ensure a premium look:
-1. Start directly with a main `# [Destination] Travel Itinerary` title.
-2. Group the schedule day-by-day using `### Day X: [Name of Highlight]` headers.
-3. Use bullet points (`-`) for specific activities under Morning, Afternoon, and Evening subheadings.
-4. Add relevant emojis throughout the text for visual appeal (e.g., ✈️, 🗺️, 🍜, 🏛️, 🛍️, 🚊).
-5. State realistic estimated costs (in local currency or USD) for attractions, meals, and transport.
-6. Provide a section at the bottom titled `### 💡 RoamAI Travel Tips` with practical advice on local customs, transit options, and weather.
-7. Return ONLY the markdown itinerary. Do NOT include conversational filler text like "Sure, here is your itinerary..." or "Hope you have a good trip!".
 """
 
         # Prepare OpenAI-compatible API request
@@ -86,13 +103,14 @@ Please structure your response in Markdown using the following formatting rules 
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a professional travel agent. You write detailed, organized travel itineraries in beautiful Markdown without conversational introductory or concluding chat filler."
+                    "content": system_prompt
                 },
                 {
                     "role": "user",
-                    "content": prompt
+                    "content": user_prompt
                 }
             ],
+            "response_format": {"type": "json_object"},
             "temperature": 0.7,
             "max_tokens": 4000
         }
@@ -112,7 +130,15 @@ Please structure your response in Markdown using the following formatting rules 
             return jsonify({"error": f"Groq API Error: {error_msg}"}), response.status_code
 
         response_data = response.json()
-        itinerary = response_data['choices'][0]['message']['content']
+        itinerary_content = response_data['choices'][0]['message']['content']
+
+        # Parse the JSON string to return a clean object
+        import json
+        try:
+            itinerary = json.loads(itinerary_content)
+        except Exception as e:
+            # Fallback in case JSON is malformed
+            itinerary = {"error_parsing": True, "raw": itinerary_content}
 
         return jsonify({
             "success": True,
