@@ -656,7 +656,7 @@ img {
    FOOTER
    ========================================== */
 .footer {
-    background-color: var(--text-primary);
+    background-color: #090d16;
     color: rgba(255, 255, 255, 0.7);
     padding: 70px 0 30px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -734,6 +734,18 @@ img {
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding-top: 30px;
+}
+
+.developer-link {
+    color: var(--secondary);
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.developer-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
 }
 
 .footer-bottom-container {
